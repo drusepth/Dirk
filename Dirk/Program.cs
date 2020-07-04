@@ -16,7 +16,7 @@ namespace Dirk
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmIrcWindow());
+            Application.Run(new FrmIrcWindow());
         }
     }
 }

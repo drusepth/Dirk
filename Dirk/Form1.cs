@@ -12,24 +12,24 @@ using DIRC;
 namespace Dirk
 {
 
-    public partial class frmIrcWindow : Form
+    public partial class FrmIrcWindow : Form
     {
         public static string DefaultNick = "drusepth";
         public static string IrcServer = "irc.amazdong.com";
         public static int IrcPort = 6667;
-        public static string[] IrcChannels = new string[] { "#fj" };
+        public static string[] IrcChannels = new string[] { "#test" };
 
         public Connection irc;
 
         private Dictionary<string, TabPage> TabWindows = new Dictionary<string, TabPage>();
 
         #region Startup
-        public frmIrcWindow()
+        public FrmIrcWindow()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void FrmIrcWindow_Load(object sender, EventArgs e)
         {
             MessageBox.Show("Connecting to preconfigured server");
             irc = new Connection(DefaultNick, IrcServer, IrcPort);
@@ -129,10 +129,6 @@ namespace Dirk
         }
 
         #endregion EventHandlers
-
-        private void tabsWindowControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+        
     }
 }
