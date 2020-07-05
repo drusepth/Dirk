@@ -47,7 +47,6 @@ namespace Dirk
             // Create a top-level server node in the sidebar to organize everything for this server under
             TreeNode default_network = new TreeNode(DefaultNetworkForDebugging.Server);
             treeChannels.Nodes.Add(default_network);
-            default_network.ExpandAll();
 
             // Save a reference to this node to add channels to later
             TreeServerNodeLookup.Add(DefaultNetworkForDebugging.Server, default_network);
@@ -70,17 +69,9 @@ namespace Dirk
 
             // Create the category listview if needed
             ListView message_view = FindOrCreateCategoryListViewByName(server_node, category_node);
-            //message_view.Invoke((Action)delegate
-            //{
-            //    message_view.Items.Add(line);
-            //});
 
             // Add the message to the message_view
             AddMessageToMessageView(message_view, line);
-
-            //TabPage tab = FindOrCreateTabPageByName(line_category);
-
-            //AddMessageToTab(tab, LineFormatterService.FormatIncomingLine(line));
         }
 
         private TreeNode FindOrCreateCategoryNodeByName(TreeNode server_node, string category) {
@@ -95,8 +86,9 @@ namespace Dirk
                 treeChannels.Invoke((Action)delegate
                 {
                     server_node.Nodes.Add(new_category_node);
+                    server_node.Expand();
                 });
-
+                
                 return new_category_node;
             }
         }
@@ -139,40 +131,6 @@ namespace Dirk
             }
         }
 
-        /*
-        private TabPage FindOrCreateTabPageByName(string name)
-        {
-            if (TabWindows.Keys.Contains<string>(name))
-            {
-                // Return an existing tab
-                return TabWindows[name];
-            }
-            else
-            {
-                // Create a new tab.
-                TabPage tab = new TabPage();
-                tab.Text = name;
-
-                ListBox message_log = new ListBox
-                {
-                    Name = "MessageLog",
-                    Dock = DockStyle.Fill,
-                    SelectionMode = SelectionMode.MultiExtended,
-
-                };
-
-                tab.Controls.Add(message_log);
-                TabWindows.Add(name, tab);
-                tabsWindowControl.Invoke((Action)delegate
-                {
-                    tabsWindowControl.TabPages.Add(tab);
-                });
-
-                return tab;
-            }
-        }
-        */
-
         private void SendIrcMessage()
         {
             string message = txtMessage.Text;
@@ -187,23 +145,15 @@ namespace Dirk
             txtMessage.Text = "";
         }
         
-        /*
-        private void AddMessageToTab(TabPage tab, string line)
-        {
-            ListBox message_log = (ListBox)tab.Controls.Find("MessageLog", false)[0];
-
-            message_log.Invoke((Action)delegate
-            {
-                message_log.Items.Add(line);
-            });
-        }
-        */
         // TODO: We could (should?) probably just have a custom control that inherits from ListView, and have an AddMessage handler there
         private void AddMessageToMessageView(ListView message_view, string message)
         {
+            string timestamp = DateTime.Now.ToString("hh:mm:ss");
+            string person = ParseIRC.GetUsernameSpeaking(message);
+
             // CODESMELL: It's pretty funky that we need to specify our first column's data in the ListViewItem constructor instead of as a Subitem...
-            ListViewItem message_item = new ListViewItem("timestamp");
-            message_item.SubItems.Add("person");
+            ListViewItem message_item = new ListViewItem(timestamp);
+            message_item.SubItems.Add(person);
             message_item.SubItems.Add(message);
 
             message_view.Invoke((Action)delegate
