@@ -12,3 +12,17 @@ C:\Users\drusepth\source\repos\Dirk\Dirk\obj\Debug\Dirk.exe
 C:\Users\drusepth\source\repos\Dirk\Dirk\obj\Debug\Dirk.pdb
 C:\Users\drusepth\source\repos\Dirk\Dirk\obj\Debug\Dirk.frmIrcWindow.resources
 C:\Users\drusepth\source\repos\Dirk\Dirk\obj\Debug\Dirk.frmUiSandbox.resources
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\bin\Debug\Dirk.exe.config
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\bin\Debug\Dirk.exe
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\bin\Debug\Dirk.pdb
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\bin\Debug\DIRC.dll
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\bin\Debug\DIRC.pdb
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.csprojAssemblyReference.cache
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.FrmIrcWindow.resources
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.Properties.Resources.resources
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.frmUiSandbox.resources
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.csproj.GenerateResource.cache
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.csproj.CoreCompileInputs.cache
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.csproj.CopyComplete
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.exe
+C:\Users\druse\OneDrive\Documents\Code\Dirk\Dirk\obj\Debug\Dirk.pdb

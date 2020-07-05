@@ -50,7 +50,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1286, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1114, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -82,8 +82,8 @@
             // splitContainerChatWindow.Panel2
             // 
             this.splitContainerChatWindow.Panel2.Controls.Add(this.panel1);
-            this.splitContainerChatWindow.Size = new System.Drawing.Size(1286, 999);
-            this.splitContainerChatWindow.SplitterDistance = 256;
+            this.splitContainerChatWindow.Size = new System.Drawing.Size(1114, 690);
+            this.splitContainerChatWindow.SplitterDistance = 221;
             this.splitContainerChatWindow.TabIndex = 4;
             // 
             // treeChannels
@@ -91,30 +91,32 @@
             this.treeChannels.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeChannels.Location = new System.Drawing.Point(0, 0);
             this.treeChannels.Name = "treeChannels";
-            this.treeChannels.Size = new System.Drawing.Size(256, 999);
+            this.treeChannels.Size = new System.Drawing.Size(221, 690);
             this.treeChannels.TabIndex = 4;
+            this.treeChannels.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeChannels_AfterSelect);
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.btnMessageSend);
             this.panel1.Controls.Add(this.txtMessage);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 973);
+            this.panel1.Location = new System.Drawing.Point(0, 664);
             this.panel1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1026, 26);
+            this.panel1.Size = new System.Drawing.Size(889, 26);
             this.panel1.TabIndex = 6;
             // 
             // btnMessageSend
             // 
             this.btnMessageSend.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnMessageSend.Location = new System.Drawing.Point(901, 0);
+            this.btnMessageSend.Location = new System.Drawing.Point(764, 0);
             this.btnMessageSend.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnMessageSend.Name = "btnMessageSend";
             this.btnMessageSend.Size = new System.Drawing.Size(125, 26);
             this.btnMessageSend.TabIndex = 1;
             this.btnMessageSend.Text = "Send";
             this.btnMessageSend.UseVisualStyleBackColor = true;
+            this.btnMessageSend.Click += new System.EventHandler(this.BtnMessageSend_Click);
             // 
             // txtMessage
             // 
@@ -123,14 +125,15 @@
             this.txtMessage.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.txtMessage.Multiline = true;
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(1026, 26);
+            this.txtMessage.Size = new System.Drawing.Size(889, 26);
             this.txtMessage.TabIndex = 0;
+            this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtMessage_KeyDown);
             // 
             // FrmIrcWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1286, 1023);
+            this.ClientSize = new System.Drawing.Size(1114, 714);
             this.Controls.Add(this.splitContainerChatWindow);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

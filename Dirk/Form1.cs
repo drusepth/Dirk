@@ -17,9 +17,13 @@ namespace Dirk
     {
         // TODO: replace these with some form that has users set up network/user later, but for now we cool
         private User DefaultUserForDebugging = new User("drusepth");
-        private Network DefaultNetworkForDebugging = new Network("irc.amazdong.com", 6667, new string[] { "#test" });
+        private Network DefaultNetworkForDebugging = new Network("irc.amazdong.com", 6667, new string[] { "#test", "#test2" });
 
         public Connection irc;
+
+        #region Active State
+        public string ActiveCategoryKey { get; set; }
+        #endregion Active State
 
         #region LookupTables
         // O(1) lookup tables to avoid iterating over things to find other things
@@ -47,7 +51,6 @@ namespace Dirk
             // Create a top-level server node in the sidebar to organize everything for this server under
             TreeNode default_network = new TreeNode(DefaultNetworkForDebugging.Server);
             treeChannels.Nodes.Add(default_network);
-            default_network.ExpandAll();
 
             // Save a reference to this node to add channels to later
             TreeServerNodeLookup.Add(DefaultNetworkForDebugging.Server, default_network);
@@ -70,24 +73,17 @@ namespace Dirk
 
             // Create the category listview if needed
             ListView message_view = FindOrCreateCategoryListViewByName(server_node, category_node);
-            //message_view.Invoke((Action)delegate
-            //{
-            //    message_view.Items.Add(line);
-            //});
 
             // Add the message to the message_view
             AddMessageToMessageView(message_view, line);
-
-            //TabPage tab = FindOrCreateTabPageByName(line_category);
-
-            //AddMessageToTab(tab, LineFormatterService.FormatIncomingLine(line));
         }
 
         private TreeNode FindOrCreateCategoryNodeByName(TreeNode server_node, string category) {
             if (TreeCategoryNodeLookup.ContainsKey(server_node.Text + '/' + category))
             {
                 return TreeCategoryNodeLookup[server_node.Text + '/' + category];
-            } else
+            }
+            else
             {
                 TreeNode new_category_node = new TreeNode(category);
                 TreeCategoryNodeLookup.Add(server_node.Text + '/' + category, new_category_node);
@@ -95,8 +91,9 @@ namespace Dirk
                 treeChannels.Invoke((Action)delegate
                 {
                     server_node.Nodes.Add(new_category_node);
+                    server_node.Expand();
                 });
-
+                
                 return new_category_node;
             }
         }
@@ -113,7 +110,7 @@ namespace Dirk
                     Dock = DockStyle.Fill,
                     View = View.Details,
                     AllowColumnReorder = true,
-                    //GridLines = true,
+                    GridLines = true,
                     Sorting = SortOrder.Ascending,
                     FullRowSelect = true,
                     Scrollable = true
@@ -139,72 +136,57 @@ namespace Dirk
             }
         }
 
-        /*
-        private TabPage FindOrCreateTabPageByName(string name)
-        {
-            if (TabWindows.Keys.Contains<string>(name))
-            {
-                // Return an existing tab
-                return TabWindows[name];
-            }
-            else
-            {
-                // Create a new tab.
-                TabPage tab = new TabPage();
-                tab.Text = name;
-
-                ListBox message_log = new ListBox
-                {
-                    Name = "MessageLog",
-                    Dock = DockStyle.Fill,
-                    SelectionMode = SelectionMode.MultiExtended,
-
-                };
-
-                tab.Controls.Add(message_log);
-                TabWindows.Add(name, tab);
-                tabsWindowControl.Invoke((Action)delegate
-                {
-                    tabsWindowControl.TabPages.Add(tab);
-                });
-
-                return tab;
-            }
-        }
-        */
-
         private void SendIrcMessage()
         {
             string message = txtMessage.Text;
 
-            // TODO replace this with sending a message to the active node's ingress
-            irc.SendGlobalMessage(message);
+            if (message.StartsWith("/"))
+            {
+                ProcessClientAction(message);
+            } else
+            {
+                // TODO replace this with sending a message to the active node's ingress
+                irc.SendChannelMessage(ActiveCategoryKey.Split('/').Last<string>(), message);
 
-            // TODO We also want to append our message to the active node's message view
-            //AddMessageToTab(tabsWindowControl.SelectedTab, "<" + DefaultNick + "> " + message);
+                // TODO We also want to append our message to the active node's message view
+                //AddMessageToTab(tabsWindowControl.SelectedTab, "<" + DefaultNick + "> " + message);
+            }
 
             // And clear the input box
             txtMessage.Text = "";
         }
-        
-        /*
-        private void AddMessageToTab(TabPage tab, string line)
-        {
-            ListBox message_log = (ListBox)tab.Controls.Find("MessageLog", false)[0];
 
-            message_log.Invoke((Action)delegate
+        private void ProcessClientAction(string message)
+        {
+            string[] message_parts = message.ToLower().Split(' ');
+            switch(message_parts[0])
             {
-                message_log.Items.Add(line);
-            });
+                case "/join":
+                    string channel_to_join = message_parts[1];
+                    irc.JoinChannel(channel_to_join);
+
+                    break;
+            }
         }
-        */
+
         // TODO: We could (should?) probably just have a custom control that inherits from ListView, and have an AddMessage handler there
         private void AddMessageToMessageView(ListView message_view, string message)
         {
+            string timestamp = DateTime.Now.ToString("hh:mm:ss");
+            string person = ParseIRC.GetUsernameSpeaking(message);
+            string formatted_line = ParseIRC.GetSpokenLine(message);
+
             // CODESMELL: It's pretty funky that we need to specify our first column's data in the ListViewItem constructor instead of as a Subitem...
-            ListViewItem message_item = new ListViewItem("timestamp");
-            message_item.SubItems.Add("person");
-            message_item.SubItems.Add(message);
+            ListViewItem message_item = new ListViewItem(timestamp);
+            message_item.SubItems.Add(person);
+            if (ParseIRC.IsMessage(message))
+            {
+                message_item.SubItems.Add(formatted_line);
+            }
+            else
+            {
+                message_item.SubItems.Add(message);
+            }
 
             message_view.Invoke((Action)delegate
             {
@@ -232,7 +214,39 @@ namespace Dirk
             sandbox.Show();
         }
 
+        private void treeChannels_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeNode selected_node = e.Node;
+
+            string node_key = selected_node.Text;
+            TreeNode current_node = selected_node;
+            while (current_node.Parent != null)
+            {
+                node_key = current_node.Parent.Text + '/' + node_key;
+                current_node = current_node.Parent;
+            }
+            
+            ShowCategoryView(node_key);
+        }
+
         #endregion EventHandlers
-        
+
+        private void ShowCategoryView(string node_key)
+        {
+            // Hide the currently active category view
+            if (ActiveCategoryKey != null && MessageListViewLookup.ContainsKey(ActiveCategoryKey))
+            {
+                MessageListViewLookup[ActiveCategoryKey].Hide();
+            }
+
+            // Show the new category view
+            if (node_key != null && MessageListViewLookup.ContainsKey(node_key))
+            {
+                MessageListViewLookup[node_key].Show();
+
+                // Track the new active view
+                ActiveCategoryKey = node_key;
+            }
+        }
     }
 }
